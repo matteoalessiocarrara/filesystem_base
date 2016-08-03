@@ -74,14 +74,15 @@ struct bitmap
 
 
 
-long file_get_byte_size(FILE *fp)
+long file_get_byte_size(char *fname)
 {
-	long prev=ftell(fp), size;
+	FILE *fp = fopen(fname, "rb");
+	long size;
 	
 	fseek(fp, 0, SEEK_END);
 	size=ftell(fp);
 
-	fseek(fp, prev, SEEK_SET);
+	fclose(fp);
 	return size;
 }
 
@@ -89,6 +90,7 @@ long file_get_byte_size(FILE *fp)
 
 /* BITMAP */
 /* TODO Compressione */
+
 
 
 /* Offset in bit */
@@ -103,11 +105,11 @@ static void __set_bit(void *buffer, size_t offset, bool enable)
 
 /* Imposta lo spazio utilizzato
  * Start e offset in byte */
-static void __bitmap_set_used(struct bitmap *b, size_t start, size_t offset)
+static void __bitmap_set_used(struct bitmap *b, size_t start, size_t offset, bool used)
 {
 	size_t i = 0;
 	for(; i < offset; i++)
-		__set_bit(b->content, start + i, true);
+		__set_bit(b->content, start + i, used);
 }
 
 
@@ -130,7 +132,7 @@ static struct bitmap __bitmap_create(size_t disk_size)
 	ret.content = calloc(ret.byte_len, 1);
 	
 	/* Va segnato lo spazio occupato dalla bitmap stessa */
-	__bitmap_set_used(&ret, 0, __bitmap_get_size(&ret));
+	__bitmap_set_used(&ret, 0, __bitmap_get_size(&ret), true);
 	
 	return ret;
 }
@@ -150,12 +152,14 @@ static void __bitmap_write(struct bitmap *b, FILE *dev)
 
 
 
-void create_fs(char *dev)
+void create_fs(char *dev, size_t dev_byte_size)
 {
 	FILE *devf = fopen(dev, "r+b");
-	struct bitmap b = __bitmap_create(file_get_byte_size(devf));
+	struct bitmap b = __bitmap_create(dev_byte_size);
 	
 	__bitmap_write(&b, devf);
+
+	fclose(devf);
 }
 
 
@@ -166,6 +170,6 @@ void create_fs(char *dev)
 
 int main()
 {	
-	create_fs("./test");
+	create_fs("./test", file_get_byte_size("./test"));
 	return 0;
 }
