@@ -18,25 +18,26 @@
  * MA 02110-1301, USA.
  */
 
-# include <stdio.h>
-# include "driver/filesystem.h"
+# ifndef CONFIG_H
+# define CONFIG_H
+
+# include "types.h"
 
 
-long file_get_byte_size(char *fname)
-{
-	FILE *fp = fopen(fname, "rb");
-	long size;
-	
-	fseek(fp, 0, SEEK_END);
-	size=ftell(fp);
+# define _little_endian_
 
-	fclose(fp);
-	return size;
-}
+/* Lunghezza della bitmap in byte.
+ * WARNING Assicurarsi che il tipo sia abbastanza grande per evitare overflow.
+ * Deve contenere un valore di 1/8 dei byte sul disco. Su un disco di 16 byte
+ * per es. dovrà contenere il valore "2" (1/8*16) */
+typedef uint_least16_t bitmap_len_bytes_t;
+
+/* Questo tipo è utilizzato per salvare la dimensione del disco (in byte) */
+typedef uint_least16_t disk_size_t;
+
+/* Questo tipo contiene la lunghezza della bitmap (in byte). La bitmap ha una
+ * lunghezza pari ad 1/8 della dimensione del disco. */
+typedef uint_least16_t bitmap_length_t;
 
 
-int main()
-{	
-	create_fs("./test", file_get_byte_size("./test"));
-	return 0;
-}
+# endif /* CONFIG_H */

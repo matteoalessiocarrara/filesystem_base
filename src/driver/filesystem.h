@@ -18,25 +18,23 @@
  * MA 02110-1301, USA.
  */
 
+
+# ifndef FILESYSTEM_H
+# define FILESYSTEM_H
+
 # include <stdio.h>
-# include "driver/filesystem.h"
+# include "config.h"
 
 
-long file_get_byte_size(char *fname)
+typedef struct _disk
 {
-	FILE *fp = fopen(fname, "rb");
-	long size;
-	
-	fseek(fp, 0, SEEK_END);
-	size=ftell(fp);
-
-	fclose(fp);
-	return size;
-}
+	FILE *fp;
+	char *filename;
+	disk_size_t size_bytes;
+} disk;
 
 
-int main()
-{	
-	create_fs("./test", file_get_byte_size("./test"));
-	return 0;
-}
+void create_fs(char *filename, size_t disk_size_bytes);
+
+
+# endif /* FILESYSTEM_H */

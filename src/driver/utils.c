@@ -18,25 +18,23 @@
  * MA 02110-1301, USA.
  */
 
-# include <stdio.h>
-# include "driver/filesystem.h"
+
+# include "utils.h"
+# include "types.h"
 
 
-long file_get_byte_size(char *fname)
+void
+set_bit(void *buffer, size_t offset, bool enable)
 {
-	FILE *fp = fopen(fname, "rb");
-	long size;
-	
-	fseek(fp, 0, SEEK_END);
-	size=ftell(fp);
-
-	fclose(fp);
-	return size;
+	if (enable)
+		*((unsigned char *)buffer + offset / 8) |= (1 << (7 - offset % 8));
+	else
+		*((unsigned char *)buffer + offset / 8) &= ~(1 << (7 - offset % 8));
 }
 
 
-int main()
-{	
-	create_fs("./test", file_get_byte_size("./test"));
-	return 0;
+byte
+get_bit(void *buffer, size_t offset)
+{
+	return (*((unsigned char *)buffer + offset / 8) >> (7 - offset % 8)) & 1;
 }

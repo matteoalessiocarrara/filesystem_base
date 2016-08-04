@@ -18,25 +18,34 @@
  * MA 02110-1301, USA.
  */
 
-# include <stdio.h>
-# include "driver/filesystem.h"
+
+# ifndef TYPES_H
+# define TYPES_H
 
 
-long file_get_byte_size(char *fname)
-{
-	FILE *fp = fopen(fname, "rb");
-	long size;
-	
-	fseek(fp, 0, SEEK_END);
-	size=ftell(fp);
-
-	fclose(fp);
-	return size;
-}
+/* Emulazione del c99 */
+/* stdint.h */
+typedef unsigned char uint_least8_t;
+typedef unsigned short uint_least16_t;
 
 
-int main()
-{	
-	create_fs("./test", file_get_byte_size("./test"));
-	return 0;
-}
+/* stdbool.h */
+# define true 1
+# define false 0
+
+typedef uint_least8_t bool;
+
+/* stddef.h */
+typedef unsigned long size_t;
+
+
+typedef unsigned char		byte;
+typedef unsigned short		word;
+typedef unsigned long		dword;
+
+/* FIXME Non supportate in c89
+typedef unsigned long long	ddword;
+typedef long long			sddword;
+*/
+
+# endif /* TYPES_H */
