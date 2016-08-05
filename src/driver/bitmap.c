@@ -31,7 +31,7 @@
 
 
 byte
-bitmap_get_bit(disk d, size_t bitmap_bit_position)
+bitmap_get_bit(disk d, disk_position_t bitmap_bit_position)
 {
 	byte tmp = bitmap_get_byte(d, bitmap_bit_position);
 	return get_bit(&tmp, bitmap_bit_position % 8);
@@ -67,7 +67,7 @@ bitmap_create(disk d)
 
 
 void
-bitmap_set_used(disk d, size_t start, size_t offset, bool used)
+bitmap_set_used(disk d, disk_position_t start, disk_position_t offset, bool used)
 {
 	size_t i;
 	byte tmp;
@@ -92,7 +92,7 @@ bitmap_set_used(disk d, size_t start, size_t offset, bool used)
 
 
 bool
-bitmap_is_byte_free_at(disk d, size_t position)
+bitmap_is_byte_free_at(disk d, disk_position_t position)
 {
 	return bitmap_get_bit(d, position) == 0? true : false;
 }

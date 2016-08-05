@@ -26,12 +26,39 @@
 
 
 byte
-read_byte(disk d, disk_size_t position)
+read_8bit(disk d, disk_position_t position)
 {
 	byte tmp;
 
 	fseek(d.fp, position, SEEK_SET);
 	fread(&tmp, 1, 1, d.fp);
+
+	return tmp;
+}
+
+
+/* TODO Gestire endian */
+
+
+uint_least16_t
+read_16bit(disk d, disk_position_t position)
+{
+	uint_least16_t tmp;
+
+	fseek(d.fp, position, SEEK_SET);
+	fread(&tmp, 2, 1, d.fp);
+
+	return tmp;
+}
+
+
+uint_least32_t
+read_32bit(disk d, disk_position_t position)
+{
+	uint_least32_t tmp;
+
+	fseek(d.fp, position, SEEK_SET);
+	fread(&tmp, 4, 1, d.fp);
 
 	return tmp;
 }

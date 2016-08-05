@@ -27,6 +27,7 @@
 /* stdint.h */
 typedef unsigned char uint_least8_t;
 typedef unsigned short uint_least16_t;
+typedef unsigned long uint_least32_t;
 
 
 /* stdbool.h */
@@ -43,9 +44,5 @@ typedef unsigned char		byte;
 typedef unsigned short		word;
 typedef unsigned long		dword;
 
-/* FIXME Non supportate in c89
-typedef unsigned long long	ddword;
-typedef long long			sddword;
-*/
 
 # endif /* TYPES_H */

@@ -37,7 +37,9 @@
 # define disable_bit(buffer_pnt, offset) \
 	(*((unsigned char *)(buffer_pnt) + (offset) / 8) &= ~(1 << (7 - (offset) % 8)))
 
-byte read_byte(disk d, disk_size_t position);
+byte read_8bit(disk d, disk_position_t position);
+uint_least16_t read_16bit(disk d, disk_position_t position);
+uint_least32_t read_32bit(disk d, disk_position_t position);
 
 
 # endif /* UTILS_H */

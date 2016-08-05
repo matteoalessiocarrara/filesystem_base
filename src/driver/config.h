@@ -24,7 +24,8 @@
 # include "types.h"
 
 
-# define _little_endian_
+# define LITTLE_ENDIAN
+# define FILENAME_LENGHT 16
 
 /* Lunghezza della bitmap in byte.
  * WARNING Assicurarsi che il tipo sia abbastanza grande per evitare overflow.
@@ -38,6 +39,12 @@ typedef uint_least16_t disk_size_t;
 /* Questo tipo contiene la lunghezza della bitmap (in byte). La bitmap ha una
  * lunghezza pari ad 1/8 della dimensione del disco. */
 typedef uint_least16_t bitmap_length_t;
+
+/* Utilizzato per la lunghezza di un file (se più lungo sarà spezzato) */
+typedef uint_least16_t entry_data_lenght_t;
+
+/* Tipo per indicare una posizione su disco (start + disk_position_t bytes) */
+typedef disk_size_t disk_position_t;
 
 
 # endif /* CONFIG_H */

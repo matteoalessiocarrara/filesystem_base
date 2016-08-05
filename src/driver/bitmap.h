@@ -47,22 +47,17 @@ typedef struct _bitmap_header
 /* Legge un byte fisico dalla bitmap, contenente (anche) il bit nella posizione
  * bitmap_bit_position (più i 7 bit vicini) */
 # define bitmap_get_byte(disk_, bitmap_bit_position)\
-	read_byte(disk_, bitmap_get_physical_offset(bitmap_bit_position))
+	read_8bit(disk_, bitmap_get_physical_offset(bitmap_bit_position))
 
 /* Restituisce il bit nella bitmap alla posizione bitmap_bit_position */
-byte bitmap_get_bit(disk d, size_t bitmap_bit_position);
+byte bitmap_get_bit(disk d, disk_position_t bitmap_bit_position);
 
 /* Inizializza un disco */
 void bitmap_create(disk d);
 
 /* Imposta lo spazio utilizzato: dal byte "start" del disco fino a start + offset */
-void bitmap_set_used(disk d, size_t start, size_t offset, bool used);
-bool bitmap_is_byte_free_at(disk d, size_t position);
-
-
-
-
-
+void bitmap_set_used(disk d, disk_position_t start, disk_position_t offset, bool used);
+bool bitmap_is_byte_free_at(disk d, disk_position_t position);
 
 
 # endif /* BITMAP_H */
