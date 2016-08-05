@@ -19,22 +19,19 @@
  */
 
 
+# include "filesystem.h"
+# include "config.h"
 # include "utils.h"
 # include "types.h"
 
 
-void
-set_bit(void *buffer, size_t offset, bool enable)
-{
-	if (enable)
-		*((unsigned char *)buffer + offset / 8) |= (1 << (7 - offset % 8));
-	else
-		*((unsigned char *)buffer + offset / 8) &= ~(1 << (7 - offset % 8));
-}
-
-
 byte
-get_bit(void *buffer, size_t offset)
+read_byte(disk d, disk_size_t position)
 {
-	return (*((unsigned char *)buffer + offset / 8) >> (7 - offset % 8)) & 1;
+	byte tmp;
+
+	fseek(d.fp, position, SEEK_SET);
+	fread(&tmp, 1, 1, d.fp);
+
+	return tmp;
 }

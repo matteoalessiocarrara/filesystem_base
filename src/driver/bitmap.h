@@ -23,6 +23,7 @@
 # define BITMAP_H
 
 # include "filesystem.h"
+# include "utils.h"
 # include "config.h"
 
 
@@ -37,23 +38,19 @@ typedef struct _bitmap_header
 
 /* Calcola la dimensione della bitmap basandosi sulla dimensione del disco (header
  * escluso) */
-# define bitmap_calc_lenght_bytes(disk__d) ceil(disk__d.size_bytes/8.0)
+# define bitmap_calc_lenght_bytes(disk_) ceil(disk_.size_bytes/8.0)
 
-/* Restituisce l'offset su disco per accedere ad una posizione nella bitmap */
-# define bitmap_get_physical_offset(size_t__bitmap_offset) \
-	BITMAP_HEADER_PHYSICAL_SIZE_BYTES + size_t__bitmap_offset
+/* Restituisce l'offset su disco per accedere ad un bit nella bitmap */
+# define bitmap_get_physical_offset(bitmap_bit_position) \
+	(BITMAP_HEADER_PHYSICAL_SIZE_BYTES + ceil((bitmap_bit_position)/8.0))
 
 /* Legge un byte fisico dalla bitmap, contenente (anche) il bit nella posizione
- * bitmap_offset (più i 7 bit vicini). Il bit richiesto può essere ottenuto con
- * bitmap_get_bit_in_byte() */
-byte bitmap_get_byte(disk d, size_t bitmap_offset);
+ * bitmap_bit_position (più i 7 bit vicini) */
+# define bitmap_get_byte(disk_, bitmap_bit_position)\
+	read_byte(disk_, bitmap_get_physical_offset(bitmap_bit_position))
 
-/* Estrae un bit specifico (quello alla posizione bitmap_offset) da un byte ottenuto
- * con bitmap_get_byte() */
-byte bitmap_get_bit_in_byte(byte b, size_t bitmap_offset);
-
-/* Restituisce il bit alla posizione bitmap_offset */
-byte bitmap_get_bit(disk d, size_t bitmap_offset);
+/* Restituisce il bit nella bitmap alla posizione bitmap_bit_position */
+byte bitmap_get_bit(disk d, size_t bitmap_bit_position);
 
 /* Inizializza un disco */
 void bitmap_create(disk d);

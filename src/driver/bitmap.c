@@ -31,22 +31,10 @@
 
 
 byte
-bitmap_get_byte(disk d, size_t bitmap_offset)
+bitmap_get_bit(disk d, size_t bitmap_bit_position)
 {
-	byte tmp;
-
-	fseek(d.fp, bitmap_get_physical_offset(bitmap_offset), SEEK_SET);
-	fread(&tmp, 1, 1, d.fp);
-
-	return tmp;
-}
-
-
-byte
-bitmap_get_bit(disk d, size_t bitmap_offset)
-{
-	byte tmp = bitmap_get_byte(d, bitmap_offset);
-	return get_bit(&tmp, bitmap_offset % 8);
+	byte tmp = bitmap_get_byte(d, bitmap_bit_position);
+	return get_bit(&tmp, bitmap_bit_position % 8);
 }
 
 
@@ -96,7 +84,7 @@ bitmap_set_used(disk d, size_t start, size_t offset, bool used)
 		fread(&tmp, 1, 1, d.fp);
 
 		for(i = 0; i < offset % 8; i++)
-			set_bit(&tmp, i, used);
+			(used)? enable_bit(&tmp, i) : disable_bit(&tmp, i);
 
 		fwrite(&tmp, 1, 1, d.fp);
 	}

@@ -22,11 +22,22 @@
 # ifndef UTILS_H
 # define UTILS_H
 
+# include "filesystem.h"
+# include "config.h"
 # include "types.h"
 
 
-void set_bit(void *buffer, size_t offset, bool enable);
-byte get_bit(void *buffer, size_t offset);
+/* Restituisce un byte contenente solo il bit */
+# define get_bit(buffer_pnt, offset) \
+	((*((unsigned char *)(buffer_pnt) + (offset) / 8) >> (7 - (offset) % 8)) & 1)
+
+# define enable_bit(buffer_pnt, offset) \
+	(*((unsigned char *)(buffer_pnt) + (offset) / 8) |= (1 << (7 - (offset) % 8)))
+
+# define disable_bit(buffer_pnt, offset) \
+	(*((unsigned char *)(buffer_pnt) + (offset) / 8) &= ~(1 << (7 - (offset) % 8)))
+
+byte read_byte(disk d, disk_size_t position);
 
 
 # endif /* UTILS_H */
