@@ -30,20 +30,6 @@
 /* TODO Compressione */
 
 
-bitmap_length_t
-bitmap_calc_lenght_bytes(disk d)
-{
-	return ceil(d.size_bytes/8.0);
-}
-
-
-size_t
-bitmap_get_physical_offset(size_t bitmap_offset)
-{
-	return BITMAP_HEADER_PHYSICAL_SIZE_BYTES + bitmap_offset;
-}
-
-
 byte
 bitmap_get_byte(disk d, size_t bitmap_offset)
 {
@@ -57,17 +43,10 @@ bitmap_get_byte(disk d, size_t bitmap_offset)
 
 
 byte
-bitmap_get_bit_in_byte(byte b, size_t bitmap_offset)
-{
-	return get_bit(&b, bitmap_offset % 8);
-}
-
-
-byte
 bitmap_get_bit(disk d, size_t bitmap_offset)
 {
 	byte tmp = bitmap_get_byte(d, bitmap_offset);
-	return bitmap_get_bit_in_byte(tmp, bitmap_offset);
+	return get_bit(&tmp, bitmap_offset % 8);
 }
 
 
@@ -75,15 +54,16 @@ void
 bitmap_create(disk d)
 {
 	bitmap_header header;
-	uint_least8_t invalid_bits;
+	byte last_byte;
 
 	header.bitmap_len_bytes = bitmap_calc_lenght_bytes(d);
-	invalid_bits = (d.size_bytes % 8)? 8 - (d.size_bytes % 8) : 0;
+	/* L'ultimo byte potrebbe contenere bit che non rappresentano spazio realmente
+	 * esistente su disco. Se ci sono, si impostano come utilizzati. */
+	last_byte = 0xff >> (8 - d.size_bytes % 8);
 
 	rewind(d.fp);
 
-	/* WARNING L'header (struct) non va scritto direttamente: the compiler may
-	 * add padding for alignment requirements */
+	/* XXX Scrivere direttamente struct */
 	fwrite(&header.bitmap_len_bytes, sizeof(header.bitmap_len_bytes), 1, d.fp);
 
 	/* Azzera la bitmap */
@@ -93,9 +73,8 @@ bitmap_create(disk d)
 	 * anche l'header) */
 	bitmap_set_used(d, 0, BITMAP_HEADER_PHYSICAL_SIZE_BYTES + header.bitmap_len_bytes, true);
 
-	/* Segna come utilizzati i bit non validi */
-	if (invalid_bits > 0)
-		bitmap_set_used(d, d.size_bytes + 1, invalid_bits - 1, true);
+	fseek(d.fp, bitmap_get_physical_offset(d.size_bytes - 8) , SEEK_SET);
+	fwrite(&last_byte, 1, 1, d.fp)
 }
 
 

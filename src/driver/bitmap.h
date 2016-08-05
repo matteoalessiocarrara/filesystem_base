@@ -37,10 +37,11 @@ typedef struct _bitmap_header
 
 /* Calcola la dimensione della bitmap basandosi sulla dimensione del disco (header
  * escluso) */
-bitmap_length_t bitmap_calc_lenght_bytes(disk d);
+# define bitmap_calc_lenght_bytes(disk__d) ceil(disk__d.size_bytes/8.0)
 
 /* Restituisce l'offset su disco per accedere ad una posizione nella bitmap */
-size_t bitmap_get_physical_offset(size_t bitmap_offset);
+# define bitmap_get_physical_offset(size_t__bitmap_offset) \
+	BITMAP_HEADER_PHYSICAL_SIZE_BYTES + size_t__bitmap_offset
 
 /* Legge un byte fisico dalla bitmap, contenente (anche) il bit nella posizione
  * bitmap_offset (più i 7 bit vicini). Il bit richiesto può essere ottenuto con
@@ -60,6 +61,9 @@ void bitmap_create(disk d);
 /* Imposta lo spazio utilizzato: dal byte "start" del disco fino a start + offset */
 void bitmap_set_used(disk d, size_t start, size_t offset, bool used);
 bool bitmap_is_byte_free_at(disk d, size_t position);
+
+
+
 
 
 
