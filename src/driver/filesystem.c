@@ -18,25 +18,23 @@
  * MA 02110-1301, USA.
  */
 
+# include <string.h>
+# include <malloc.h>
 # include <stdio.h>
-# include "driver/filesystem.h"
+
+# include "filesystem.h"
+# include "bitmap.h"
+# include "types.h"
 
 
-long file_get_byte_size(char *fname)
+void
+create_fs(char *filename, size_t disk_size_bytes)
 {
-	FILE *fp = fopen(fname, "rb");
-	long size;
-	
-	fseek(fp, 0, SEEK_END);
-	size=ftell(fp);
+	disk d;
 
-	fclose(fp);
-	return size;
-}
+	d.fp = fopen(filename, "rw+b");
+	d.filename = malloc(strlen(filename) + 1); strcpy(d.filename, filename);
+	d.size_bytes = disk_size_bytes;
 
-
-int main()
-{	
-	create_fs("./test", file_get_byte_size("./test"));
-	return 0;
+	bitmap_create(d);
 }

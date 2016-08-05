@@ -18,25 +18,15 @@
  * MA 02110-1301, USA.
  */
 
-# include <stdio.h>
-# include "driver/filesystem.h"
+
+# ifndef UTILS_H
+# define UTILS_H
+
+# include "types.h"
 
 
-long file_get_byte_size(char *fname)
-{
-	FILE *fp = fopen(fname, "rb");
-	long size;
-	
-	fseek(fp, 0, SEEK_END);
-	size=ftell(fp);
-
-	fclose(fp);
-	return size;
-}
+void set_bit(void *buffer, size_t offset, bool enable);
+byte get_bit(void *buffer, size_t offset);
 
 
-int main()
-{	
-	create_fs("./test", file_get_byte_size("./test"));
-	return 0;
-}
+# endif /* UTILS_H */
