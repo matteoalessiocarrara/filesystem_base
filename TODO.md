@@ -1,5 +1,5 @@
-- [ ] Scrittura della bitmap
-- [ ] Lettura della bitmap
+- [X] Scrittura della bitmap
+- [X] Lettura della bitmap
 - [ ] Scrittura dei file
 - [ ] Lettura dei file
 - [ ] Driver fuse
