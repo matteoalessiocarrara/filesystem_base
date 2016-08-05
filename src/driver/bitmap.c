@@ -74,7 +74,7 @@ bitmap_create(disk d)
 	bitmap_set_used(d, 0, BITMAP_HEADER_PHYSICAL_SIZE_BYTES + header.bitmap_len_bytes, true);
 
 	fseek(d.fp, bitmap_get_physical_offset(d.size_bytes - 8) , SEEK_SET);
-	fwrite(&last_byte, 1, 1, d.fp)
+	fwrite(&last_byte, 1, 1, d.fp);
 }
 
 
